@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Plagiarism Checker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="wrap">
+    <h1>Plagiarism Checker 🧠</h1>
+
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form action="/check" method="post" enctype="multipart/form-data" class="upload-form">
+      <div>
+        <label>Upload File 1 (txt/pdf)</label><br>
+        <input type="file" name="file1" accept=".txt,.pdf" required>
+      </div>
+      <div>
+        <label>Upload File 2 (txt/pdf)</label><br>
+        <input type="file" name="file2" accept=".txt,.pdf" required>
+      </div>
+      <div>
+        <button type="submit">Check Similarity</button>
+      </div>
+    </form>
+
+    {% if result is defined %}
+      <div class="summary">
+        <h2>Overall Similarity: {{ result }}%</h2>
+        <p><strong>Verdict:</strong> {{ verdict }}</p>
+        <p><strong>Sentence-match in {{ filename1 }}:</strong> {{ sent_match_pct }}%</p>
+      </div>
+
+      <div class="comparison">
+        <div class="doc">
+          <h3>{{ filename1 }}</h3>
+          <div class="docbox">{{ highlighted1 | safe }}</div>
+        </div>
+        <div class="doc">
+          <h3>{{ filename2 }}</h3>
+          <div class="docbox">{{ highlighted2 | safe }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    <footer>
+      <small>Note: sentence-level matches use TF-IDF & cosine similarity (threshold = 0.6).</small>
+    </footer>
+  </div>
+</body>
+</html>
